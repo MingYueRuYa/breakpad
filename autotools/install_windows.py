@@ -14,27 +14,15 @@ import sys
 class App:
 	def __init__(self, solution_dir, mode, platform):
 		self.header_files = []
-		self.log_dir = ['crash_generation_client', 'crash_generation_server', 'crash_report_sender']
+		self.log_dir = ['crash_generation_client', 'crash_generation_server', 'crash_report_sender', 'crash_generation_app']
 		self.root_dir = solution_dir
 		self.compile_mode = mode
 		self.compile_platform = platform
+		self.exclude_files = ['crash_generation_app.h']
 
-	# @property
-	# def root_dir(self):
-	# 	cur_dir = os.getcwd()
-	# 	parent_dir, child_dir = os.path.split(cur_dir)
-	# 	print('------------root_dir------------------')
-	# 	print(parent_dir)
-	# 	print('------------root_dir------------------')
-	# 	return parent_dir
-
-	# @property
-	# def src_dir(self):
-	# 	return self.root_dir + '\\src\\'
-	#
 	@property
 	def install_dir(self):
-		return self.root_dir + '/install_windows/'
+		return self.root_dir + '/../../../install_windows/'
 
 	@property
 	def win_file_path(self):
@@ -54,7 +42,8 @@ class App:
 					content = content.strip()
 					if target_str in content:
 						content = content.replace(target_str, '').strip()
-						if not content.startswith('C:'):
+						base_file_name = os.path.basename(content)
+						if not content.startswith('C:') and base_file_name not in self.exclude_files:
 							self.header_files.append(content)
 					content = file.readline()
 
